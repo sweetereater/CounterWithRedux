@@ -1,23 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import CounterContainer from './Components/CounterContainer/CounterContainer';
 
 
 function App() {
 
-  const valueFromLocalStorage = Number(localStorage.getItem('value'));
-  const maxValueFromLocal = Number(localStorage.getItem('maxValue'));
+  const [startValue, setValue] = useState(0);
+  const [maxValue, setMaxValue] = useState(5);
 
-  const [startValue, setValue] = useState(valueFromLocalStorage ? valueFromLocalStorage : 0);
+  useEffect(() => {
+    const startValueFromLS = localStorage.getItem('value');
+    const maxValueFromLS = localStorage.getItem('maxValue');
+    if (startValueFromLS) {
+      setValue(Number(startValueFromLS));
+    }
+    if (maxValueFromLS) {
+      setMaxValue(Number(maxValueFromLS));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('value', String(startValue));
+  }, [startValue]);
+
+  useEffect(() => {
+    localStorage.setItem('maxValue', String(maxValue));
+  }, [maxValue])
+
   const [visibleValue, setVisibleValue] = useState(startValue);
-  const [maxValue, setMaxValue] = useState(maxValueFromLocal ? maxValueFromLocal : 5);
-  const [error, setError] = useState("");
 
   const incrementValue = () => {
     setVisibleValue(visibleValue + 1);
   }
 
   const resetValue = () => setVisibleValue(startValue);
+
+
 
   const handleValueChange = (value: number) => {
     if (value >= maxValue) {
@@ -27,10 +45,9 @@ function App() {
     if (error && value < maxValue) {
       setError("");
     }
-
-    localStorage.setItem('value', String(value));
     setValue(value);
   }
+
 
   const handleMaxValueChange = (value: number) => {
 
@@ -41,10 +58,10 @@ function App() {
     if (error && value > startValue) {
       setError("");
     }
-
-    localStorage.setItem('maxValue', String(value));
     setMaxValue(value);
   }
+
+  const [error, setError] = useState("");
 
   const [isSettingsOn, setIsSettingsOn] = useState(false);
 
