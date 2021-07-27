@@ -1,0 +1,53 @@
+.container {
+    border: 3px solid lightskyblue;
+    border-radius: 10px;
+    margin: 20px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .counter {
+    width: 600px;
+    height: 400px;
+  }
+  
+  .counter__ValueContainer {
+    width: 560px;
+    height: 220px;
+    color: white;
+  }
+  .counter__Value {
+    font-size: 56px;
+  }
+  
+  .limit {
+    color: red;
+  }
+  
+ 
+  
+  .counter__Buttons {
+    width: 560px;
+    height: 120px;
+    justify-content: space-around;
+  }
+  
+  .counter__button {
+    cursor: pointer;
+    font-size: 24px;
+    padding: 15px 20px;
+    background-color: lightskyblue;
+    color:rgb(54, 54, 70);
+    border-radius: 10px;
+    outline: none;
+  }
+  
+  .disabledButton {
+    opacity: 0.5;
+  }
+  
+  .counter__button:active {
+    color: lightskyblue;
+    background-color: rgb(54, 54, 70);
+  }
