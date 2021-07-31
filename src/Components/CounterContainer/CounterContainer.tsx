@@ -1,65 +1,92 @@
+import { useSelector, useDispatch } from 'react-redux';
+import { AppStateType } from '../../redux/store';
 import InputContainer from '../InputContainer/InputContainer';
+import { StateType } from '../../redux/CounterReducer';
+import { setStartValue, setMaxValue, incrementValue, resetValue, setError, toggleSettings } from '../../redux/CounterReducer';
 import './CounterContainer.css';
 
-type CounterContainerPropsType = {
-    startValue: number
-    value: number
-    maxValue: number
-    error: string
-    settings: boolean
-    incrementValue: () => void
-    resetValue: () => void
-    toggleSettings: () => void
-    handleValueChange: (value: number) => void
-    handleMaxValueChange: (value: number) => void
-}
+function CounterContainer() {
 
-function CounterContainer(props: CounterContainerPropsType) {
+    const { startValue, counterValue, maxValue, error, settings } = useSelector<AppStateType, StateType>(state => state.counter);
+    const dispatch = useDispatch();
 
     let counterValueClasses = "counter__Value";
     let incButtonClasses = "counter__button";
     let settingsButtonClasses = "counter__button";
 
-    if (props.value === props.maxValue) {
+    if (counterValue === maxValue) {
         incButtonClasses += " disabledButton";
         counterValueClasses += " limit";
     }
 
-    if (props.error) {
+    if (error) {
         settingsButtonClasses += " disabledButton";
     }
+
+    const handleValueChange = (value: number) => {
+        if (value >= maxValue) {
+            dispatch(setError(true))
+        }
+
+        if (error && value < maxValue) {
+            dispatch(setError(false));
+        }
+        dispatch(setStartValue(value))
+    }
+
+    const handleMaxValueChange = (value: number) => {
+
+        if (value <= startValue) {
+            dispatch(setError(true))
+        }
+
+        if (error && value > startValue) {
+            dispatch(setError(false))
+        }
+        dispatch(setMaxValue(value));
+    }
+
+
+    const handleIncrementClick = () => dispatch(incrementValue());
+    const handleResetClick = () => dispatch(resetValue());
+    const handleSettingsClick = () => dispatch(toggleSettings());
 
     return (
         <div className="counter container">
             <div>
                 <div className="counter__ValueContainer container">
-                    {!props.settings ?
-                        <div className={counterValueClasses}>{props.value}</div> :
+                    {!settings ?
+                        <div className={counterValueClasses}>{counterValue}</div> :
                         <div className="counter_inputsContainer">
-                            <InputContainer text="Start value" value={props.startValue} error={props.error} onChangeHandler={props.handleValueChange} />
-                            <InputContainer text="Max value" value={props.maxValue} error={props.error} onChangeHandler={props.handleMaxValueChange} />
+                            <InputContainer text="Start value" value={startValue} error={error} onChangeHandler={handleValueChange} />
+                            <InputContainer text="Max value" value={maxValue} error={error} onChangeHandler={handleMaxValueChange} />
                         </div>}
                 </div>
 
                 <div className="counter__Buttons container">
                     {
-                        !props.settings && <>
+                        !settings && <>
                             <button
-                                disabled={props.value >= props.maxValue}
                                 className={incButtonClasses}
-                                onClick={props.incrementValue}>Inc</button>
+                                onClick={handleIncrementClick}
+                                disabled={counterValue >= maxValue}
+                            >
+                                Inc
+                            </button>
                             <button
                                 className="counter__button"
-                                onClick={props.resetValue}
-                            >Reset</button>
+                                onClick={handleResetClick}
+                            >
+                                Reset
+                            </button>
                         </>
                     }
                     <button
                         className={settingsButtonClasses}
-                        onClick={props.toggleSettings}
-                        disabled={!!props.error}
+                        onClick={handleSettingsClick}
+                        disabled={!!error}
                     >
-                        {props.settings ? "Close Settings" : "Show settings"}
+                        {settings ? "Close Settings" : "Show settings"}
                     </button>
                 </div>
             </div>

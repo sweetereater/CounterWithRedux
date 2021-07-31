@@ -4,7 +4,7 @@ import s from './InputContainer.module.css';
 type InputContainerPropsType = {
     text: string
     value: number
-    error: string
+    error: boolean
     onChangeHandler: (value: number) => void
 }
 
