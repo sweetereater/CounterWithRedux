@@ -1,14 +1,39 @@
+import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppStateType } from '../../redux/store';
 import InputContainer from '../InputContainer/InputContainer';
-import { StateType } from '../../redux/CounterReducer';
-import { setStartValue, setMaxValue, incrementValue, resetValue, setError, toggleSettings } from '../../redux/CounterReducer';
+import { initialState, StateType } from '../../redux/CounterReducer';
+import { setStartValue, setMaxValue, incrementValue, resetValue, setError, toggleSettings, setValueInLocalStorageTC, getStartValueFromLocaleStorageTC, getMaxValueFromLocaleStorageTC } from '../../redux/CounterReducer';
 import './CounterContainer.css';
 
 function CounterContainer() {
 
     const { startValue, counterValue, maxValue, error, settings } = useSelector<AppStateType, StateType>(state => state.counter);
+
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(getStartValueFromLocaleStorageTC());
+        dispatch(getMaxValueFromLocaleStorageTC());
+    }, []);
+
+
+    useEffect(() => {
+        if (startValue !== initialState.startValue) {
+            dispatch(setValueInLocalStorageTC('startValue', startValue))
+        }
+    }, [startValue])
+
+    useEffect(() => {
+        if (maxValue !== initialState.maxValue) {
+            dispatch(setValueInLocalStorageTC('maxValue', maxValue));
+        }
+
+    }, [maxValue])
+
+
+
+
 
     let counterValueClasses = "counter__Value";
     let incButtonClasses = "counter__button";
